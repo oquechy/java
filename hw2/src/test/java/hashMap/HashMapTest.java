@@ -1,89 +1,89 @@
 package hashMap;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.Assert;
 
-class HashMapTest {
+public class HashMapTest {
 
-    final static String[] VALUES = new String[]{"one", "two", "three", "four"};
+    private final static String[] VALUES = new String[]{"one", "two", "three", "four"};
 
     @Test
-    void testConstructor() {
+    public void testConstructor() {
         HashMap map = new HashMap();
-        assertEquals(0, map.size());
-        assertFalse(map.contains("key"));
-        assertEquals(null, map.get("key"));
+        Assert.assertEquals(0, map.size());
+        Assert.assertFalse(map.contains("key"));
+        Assert.assertEquals(null, map.get("key"));
     }
 
     @Test
-    void testPut() {
+    public void testPut() {
         HashMap map = new HashMap();
 
         init(map);
 
-        assertEquals(VALUES.length, map.size());
+        Assert.assertEquals(VALUES.length, map.size());
 
         for (int i = 0; i < VALUES.length; i++) {
             String value = map.put(String.valueOf(i + 1), VALUES[VALUES.length - i - 1]);
-            assertEquals(VALUES[i], value);
+            Assert.assertEquals(VALUES[i], value);
         }
 
-        assertEquals(VALUES.length, map.size());
+        Assert.assertEquals(VALUES.length, map.size());
     }
 
     @Test
-    void testPutNull() {
+    public void testPutNull() {
         HashMap map = new HashMap();
 
         initNull(map);
 
-        assertEquals("value", map.get(null));
-        assertEquals(null, map.get("key"));
+        Assert.assertEquals("value", map.get(null));
+        Assert.assertEquals(null, map.get("key"));
     }
 
     @Test
-    void testContains() {
+    public void testContains() {
         HashMap map = new HashMap();
 
         init(map);
 
         for (int i = 0; i < VALUES.length; i++) {
-            assertTrue(map.contains(String.valueOf(i + 1)));
+            Assert.assertTrue(map.contains(String.valueOf(i + 1)));
         }
 
-        assertFalse(map.contains("hey"));
+        Assert.assertFalse(map.contains("hey"));
     }
 
     @Test
-    void testContainsNull() {
+    public void testContainsNull() {
         HashMap map = new HashMap();
 
-        assertFalse(map.contains(null));
+        Assert.assertFalse(map.contains(null));
         map.put(null, "value");
-        assertTrue(map.contains(null));
+        Assert.assertTrue(map.contains(null));
     }
 
     @Test
-    void testSize() {
+    public void testSize() {
         HashMap map = new HashMap();
 
-        assertEquals(0, map.size());
+        Assert.assertEquals(0, map.size());
 
         init(map);
 
-        assertEquals(VALUES.length, map.size());
+        Assert.assertEquals(VALUES.length, map.size());
     }
 
     @Test
-    void testGet() {
+    public void testGet() {
         HashMap map = new HashMap();
 
         init(map);
 
         for (int i = 0; i < VALUES.length; i++) {
             String value = map.get(String.valueOf(i + 1));
-            assertEquals(VALUES[i], value);
+            Assert.assertEquals(VALUES[i], value);
         }
 
         for (int i = 0; i < VALUES.length; i++) {
@@ -92,61 +92,61 @@ class HashMapTest {
 
         for (int i = 0; i < VALUES.length; i++) {
             String value = map.get(String.valueOf(i + 1));
-            assertEquals(VALUES[VALUES.length - i - 1], value);
+            Assert.assertEquals(VALUES[VALUES.length - i - 1], value);
         }
     }
 
     @Test
-    void testGetNull() {
+    public void testGetNull() {
         HashMap map = new HashMap();
 
         initNull(map);
 
-        assertEquals("value", map.get(null));
-        assertEquals(null, map.get("key"));
-        assertEquals(null, map.get("hey"));
+        Assert.assertEquals("value", map.get(null));
+        Assert.assertEquals(null, map.get("key"));
+        Assert.assertEquals(null, map.get("hey"));
     }
 
     @Test
-    void testClear() {
+    public void testClear() {
         HashMap map = new HashMap();
 
         init(map);
         map.clear();
 
-        assertEquals(0, map.size());
+        Assert.assertEquals(0, map.size());
         for (int i = 0; i < VALUES.length; i++) {
-            assertEquals(null, map.get(String.valueOf(i + 1)));
-            assertFalse(map.contains(String.valueOf(i + 1)));
+            Assert.assertEquals(null, map.get(String.valueOf(i + 1)));
+            Assert.assertFalse(map.contains(String.valueOf(i + 1)));
         }
     }
 
     @Test
-    void testRemove() {
+    public void testRemove() {
         HashMap map = new HashMap();
 
         init(map);
 
         for (int i = 0; i < VALUES.length; i++) {
             String value = map.remove(String.valueOf(i + 1));
-            assertEquals(VALUES[i], value);
+            Assert.assertEquals(VALUES[i], value);
         }
 
         for (int i = 0; i < VALUES.length; i++) {
             String value = map.remove(String.valueOf(i + 1));
-            assertEquals(null, value);
+            Assert.assertEquals(null, value);
         }
     }
 
     @Test
-    void testRemoveNull() {
+    public void testRemoveNull() {
         HashMap map = new HashMap();
 
         initNull(map);
 
-        assertEquals("value", map.remove(null));
-        assertEquals(null, map.remove("key"));
-        assertEquals(null, map.remove("hey"));
+        Assert.assertEquals("value", map.remove(null));
+        Assert.assertEquals(null, map.remove("key"));
+        Assert.assertEquals(null, map.remove("hey"));
     }
 
     private void initNull(HashMap map) {

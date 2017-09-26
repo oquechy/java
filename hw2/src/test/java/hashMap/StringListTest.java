@@ -1,15 +1,15 @@
 package hashMap;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import org.junit.Assert;
 
-class StringListTest {
+public class StringListTest {
 
-    final static String[] VALUES = new String[]{"one", "two", "three", "four"};
+    private final static String[] VALUES = new String[]{"one", "two", "three", "four"};
 
     @Test
-    void testAdd() {
+    public void testAdd() {
 
         StringList[] nodes = new StringList[VALUES.length + 1];
 
@@ -17,16 +17,16 @@ class StringListTest {
             String key = String.valueOf(i + 1);
             nodes[i + 1] = StringList.add(nodes[i], key, VALUES[i]);
             assertEntry(VALUES[i], key, nodes[i + 1].entry);
-            assertEquals(nodes[i], nodes[i + 1].next);
-            assertEquals(null, nodes[i + 1].prev);
+            Assert.assertEquals(nodes[i], nodes[i + 1].next);
+            Assert.assertEquals(null, nodes[i + 1].prev);
             if (nodes[i] != null) {
-                assertEquals(nodes[i + 1], nodes[i].prev);
+                Assert.assertEquals(nodes[i + 1], nodes[i].prev);
             }
         }
     }
 
     @Test
-    void testAddNull() {
+    public void testAddNull() {
 
         StringList head = initNull();
         head = StringList.add(head, null, null);
@@ -34,7 +34,7 @@ class StringListTest {
     }
 
     @Test
-    void testGet() {
+    public void testGet() {
 
         StringList head = init();
 
@@ -47,7 +47,7 @@ class StringListTest {
     }
 
     @Test
-    void testGetNull() {
+    public void testGetNull() {
         StringList head = initNull();
 
         StringList.Entry entry = head.get(null);
@@ -57,7 +57,7 @@ class StringListTest {
         assertEntry(null, "key", entry);
 
         entry = head.get("hey");
-        assertEquals(null, entry);
+        Assert.assertEquals(null, entry);
     }
 
     private StringList initNull() {
@@ -67,7 +67,7 @@ class StringListTest {
     }
 
     @Test
-    void testDelete() {
+    public void testDelete() {
         StringList[] nodes = new StringList[VALUES.length + 1];
 
         for (int i = 0; i < VALUES.length; i++) {
@@ -78,19 +78,19 @@ class StringListTest {
 
         for (int i = VALUES.length - 1; i >= 0; i--) {
             head = StringList.delete(head, String.valueOf(i + 1));
-            assertEquals(nodes[i], head);
+            Assert.assertEquals(nodes[i], head);
         }
 
         for (int i = VALUES.length - 1; i >= 0; i--) {
             head = StringList.delete(head, String.valueOf(i + 1));
-            assertEquals(null, head);
+            Assert.assertEquals(null, head);
         }
 
     }
 
     private void assertEntry(String value, String key, StringList.Entry entry) {
-        assertEquals(key, entry.key);
-        assertEquals(value, entry.value);
+        Assert.assertEquals(key, entry.key);
+        Assert.assertEquals(value, entry.value);
     }
 
     private StringList init() {
