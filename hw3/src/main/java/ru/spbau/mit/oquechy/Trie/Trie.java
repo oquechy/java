@@ -1,5 +1,7 @@
 package ru.spbau.mit.oquechy.Trie;
 
+import com.sun.istack.internal.NotNull;
+
 import java.io.*;
 import java.util.HashMap;
 
@@ -12,6 +14,7 @@ import java.util.HashMap;
  */
 class Trie implements Serializable {
 
+    @NotNull
     private Node root = new Node();
 
     private static class Node implements Serializable {
