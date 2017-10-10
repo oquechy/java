@@ -1,4 +1,4 @@
-package hashMap;
+package ru.spbau.mit.oquechy.hashMap;
 
 import org.junit.Test;
 
@@ -80,10 +80,16 @@ public class HashMapTest {
         HashMap map = new HashMap();
 
         init(map);
+        map.put("привет, мир!", "привет :)");
 
         for (int i = 0; i < VALUES.length; i++) {
             String value = map.get(String.valueOf(i + 1));
             Assert.assertEquals(VALUES[i], value);
+        }
+
+        {
+            String value = map.get("привет, мир!");
+            Assert.assertEquals("привет :)", value);
         }
 
         for (int i = 0; i < VALUES.length; i++) {
