@@ -1,5 +1,8 @@
 package ru.spbau.mit.oquechy.linkedHashMap;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.*;
 
 public class LinkedHashMap<K, V> extends AbstractMap<K, V> {
@@ -10,6 +13,7 @@ public class LinkedHashMap<K, V> extends AbstractMap<K, V> {
     private int keysNum;
     private List<List<Entry<K, V>>> table;
 
+    @NotNull
     private List<Entry<K, V>> entryList = new ArrayList<>();
 
     static class Entry<K, V> implements Map.Entry<K, V> {
@@ -40,6 +44,7 @@ public class LinkedHashMap<K, V> extends AbstractMap<K, V> {
         }
     }
 
+    @NotNull
     @Override
     public Set<Map.Entry<K, V>> entrySet() {
 
@@ -52,6 +57,7 @@ public class LinkedHashMap<K, V> extends AbstractMap<K, V> {
                 return keysNum;
             }
 
+            @NotNull
             @Override
             public Iterator<Map.Entry<K, V>> iterator() {
                 return new Iterator<Map.Entry<K, V>>() {
@@ -74,6 +80,7 @@ public class LinkedHashMap<K, V> extends AbstractMap<K, V> {
      * @param key   is key for new entry
      * @param value is value for new entry
      */
+    @Nullable
     @Override
     public V put(K key, V value) {
         Entry<K, V> entry = getEntry(key);
@@ -112,6 +119,7 @@ public class LinkedHashMap<K, V> extends AbstractMap<K, V> {
      * Returns value
      * @param key to get corresponding value
      */
+    @Nullable
     @Override
     public V get(Object key) {
         Entry<K, V> entry = getEntry(key);
@@ -139,7 +147,7 @@ public class LinkedHashMap<K, V> extends AbstractMap<K, V> {
         return table.get(index) == null ? null : searchForKey(table.get(index), key);
     }
 
-    private Entry<K, V> searchForKey(List<Entry<K, V>> entries, Object key) {
+    private Entry<K, V> searchForKey(@NotNull List<Entry<K, V>> entries, Object key) {
         for (Entry<K, V> entry : entries) {
             if (Objects.equals(entry.getKey(), key)) {
                 return entry;
@@ -152,19 +160,6 @@ public class LinkedHashMap<K, V> extends AbstractMap<K, V> {
     private int index(Object key) {
         return (Objects.hashCode(key) % table.size() + table.size()) % table.size();
     }
-
-    private ArrayList<ArrayList<Entry<K, V>>> copyTable(ArrayList<ArrayList<Entry<K, V>>> input) {
-        ArrayList<ArrayList<Entry<K, V>>> copy = new ArrayList<>(input.size());
-        for(int i = 0; i < input.size(); i++) {
-            ArrayList<Entry<K, V>> line = input.get(i);
-            copy.set(i, new ArrayList<>(line.size()));
-            for(int j = 0; j < line.size(); j++) {
-                copy.get(i).set(j, line.get(j));
-            }
-        }
-        return copy;
-    }
-
 
     private void extend() {
         List<List<Entry<K, V>>> oldTable = table;
@@ -183,6 +178,7 @@ public class LinkedHashMap<K, V> extends AbstractMap<K, V> {
      * @param key to delete from table with its value
      * @return deleted value if exists and null otherwise
      */
+    @Nullable
     @Override
     public V remove(Object key) {
         int i = index(key);
@@ -203,7 +199,7 @@ public class LinkedHashMap<K, V> extends AbstractMap<K, V> {
         return null;
     }
 
-    private void removeKey(List<Entry<K, V>> entries, Object key) {
+    private void removeKey(@NotNull List<Entry<K, V>> entries, Object key) {
         for (int i = 0; i < entries.size(); i++) {
             Entry<K, V> entry = entries.get(i);
             if (Objects.equals(entry.getKey(), key)) {

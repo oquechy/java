@@ -1,5 +1,6 @@
 package ru.spbau.mit.oquechy.linkedHashMap;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import java.util.Map;
@@ -36,7 +37,7 @@ public class LinkedHashMapTest {
 
     @Test
     public void testPutNull() {
-        LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
 
         initNull(map);
 
@@ -46,7 +47,7 @@ public class LinkedHashMapTest {
 
     @Test
     public void testContainsKey() {
-        LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
 
         init(map);
 
@@ -59,7 +60,7 @@ public class LinkedHashMapTest {
 
     @Test
     public void testContainsNull() {
-        LinkedHashMap map = new LinkedHashMap();
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
 
         assertFalse(map.containsKey(null));
         map.put(null, "value");
@@ -68,7 +69,7 @@ public class LinkedHashMapTest {
 
     @Test
     public void testSize() {
-        LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
 
         assertEquals(0, map.size());
 
@@ -79,7 +80,7 @@ public class LinkedHashMapTest {
 
     @Test
     public void testGet() {
-        LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
 
         init(map);
 
@@ -111,7 +112,7 @@ public class LinkedHashMapTest {
 
     @Test
     public void testClear() {
-        LinkedHashMap<String, String> map = new LinkedHashMap<String, String>();
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
 
         init(map);
         map.clear();
@@ -151,12 +152,12 @@ public class LinkedHashMapTest {
         assertEquals(null, map.remove("hey"));
     }
 
-    private void initNull(LinkedHashMap<String, String> map) {
+    private void initNull(@NotNull LinkedHashMap<String, String> map) {
         map.put(null, "value");
         map.put("key", null);
     }
 
-    private void init(LinkedHashMap<String, String> map) {
+    private void init(@NotNull LinkedHashMap<String, String> map) {
         for (int i = 0; i < VALUES.length; i++) {
             map.put(String.valueOf(i + 1), VALUES[i]);
         }
@@ -185,26 +186,7 @@ public class LinkedHashMapTest {
         map.put(String.valueOf(2), VALUES[1]);
         assertEquals(VALUES.length, map.entrySet().size());
         int i = 0;
-        for (Map.Entry<String, String> entry : map.entrySet()) {
-            switch (i) {
-                case 0:
-                    assertEquals(String.valueOf(1), entry.getKey());
-                    assertEquals(VALUES[i++], entry.getValue());
-                    break;
-                case 1:
-                    assertEquals(String.valueOf(3), entry.getKey());
-                    assertEquals(VALUES[i++ + 1], entry.getValue());
-                    break;
-                case 2:
-                    assertEquals(String.valueOf(4), entry.getKey());
-                    assertEquals(VALUES[i++ + 1], entry.getValue());
-                    break;
-                case 3:
-                    assertEquals(String.valueOf(2), entry.getKey());
-                    assertEquals(VALUES[1], entry.getValue());
-                    break;
-            }
-        }
+        checkRemoved(map, i);
     }
 
     @Test
@@ -215,6 +197,10 @@ public class LinkedHashMapTest {
         map.put(String.valueOf(2), VALUES[1]);
         assertEquals(VALUES.length, map.entrySet().size());
         int i = 0;
+        checkRemoved(map, i);
+    }
+
+    private void checkRemoved(@NotNull LinkedHashMap<String, String> map, int i) {
         for (Map.Entry<String, String> entry : map.entrySet()) {
             switch (i) {
                 case 0:
