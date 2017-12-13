@@ -101,7 +101,7 @@ public class Injector {
         }
 
         if (implementation == null) {
-            throw new ImplementationNotFoundException();
+            throw new ImplementationNotFoundException("for " + type.getSimpleName());
         }
 
         return implementation;

@@ -67,4 +67,44 @@ public class TestInjector {
                 )
         );
     }
+
+    @Test
+    public void injectorShouldNotDetectCyclicDependencies()
+            throws Exception {
+        Injector.initialize(
+                "ru.spbau.mit.oquechy.injector.ClassWithoutCyclicDependencies",
+                Arrays.asList(Class.forName("ru.spbau.mit.oquechy.injector.ClassWithNestedDependencies"),
+                        Class.forName("ru.spbau.mit.oquechy.injector.NestedClassWithCyclicDependency"),
+                        Class.forName("ru.spbau.mit.oquechy.injector.InterfaceImpl"),
+                        Class.forName("ru.spbau.mit.oquechy.injector.ClassWithoutDependencies"),
+                        Class.forName("ru.spbau.mit.oquechy.injector.ClassWithOneClassDependency")
+                )
+        );
+    }
+
+    @Test(expected = AmbiguousImplementationException.class)
+    public void injectorShouldDetectDependenciesConflict()
+            throws Exception {
+        Injector.initialize(
+                "ru.spbau.mit.oquechy.injector.ClassWithoutCyclicDependencies",
+                Arrays.asList(Class.forName("ru.spbau.mit.oquechy.injector.ClassWithCyclicDependencies"),
+                        Class.forName("ru.spbau.mit.oquechy.injector.ClassWithNestedDependencies"),
+                        Class.forName("ru.spbau.mit.oquechy.injector.InterfaceImpl"),
+                        Class.forName("ru.spbau.mit.oquechy.injector.InterfaceImpl"),
+                        Class.forName("ru.spbau.mit.oquechy.injector.ClassWithoutDependencies"),
+                        Class.forName("ru.spbau.mit.oquechy.injector.ClassWithOneClassDependency")
+                )
+        );
+    }
+
+    @Test(expected = ImplementationNotFoundException.class)
+    public void injectorShouldDetectAbsentImplementation()
+            throws Exception {
+        Injector.initialize(
+                "ru.spbau.mit.oquechy.injector.ClassWithoutCyclicDependencies",
+                Arrays.asList(Class.forName("ru.spbau.mit.oquechy.injector.ClassWithCyclicDependencies"),
+                        Class.forName("ru.spbau.mit.oquechy.injector.ClassWithOneClassDependency")
+                )
+        );
+    }
 }
