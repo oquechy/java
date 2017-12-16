@@ -3,6 +3,8 @@ package ru.spbau.mit.oquechy.reflect;
 import com.google.googlejavaformat.java.FormatterException;
 import com.sun.org.apache.bcel.internal.classfile.LineNumber;
 import org.hamcrest.Matchers;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.junit.Test;
 import org.junit.rules.Timeout;
 import org.openjdk.tools.javac.code.Type;
@@ -31,7 +33,7 @@ public class ReflectorTest {
 
     @Test
     public void testCollectImports() throws IOException, FormatterException {
-        Set<String> imports = new HashSet<>();
+        @NotNull Set<String> imports = new HashSet<>();
         Reflector.collectImports(ImportsExample.class, imports);
         System.out.println(imports);
         assertThat(imports, hasSize(16));
@@ -111,10 +113,11 @@ class ReturnValuesExample {
     float method6() {return 0;}
     char method7() {return 0;}
     boolean method8() {return false;}
-    Void method9() {return null;}
+    @Nullable Void method9() {return null;}
 }
 
 class FinalInitializingExample {
+    @Nullable
     final Void defaultVoid = null;
     final byte defaultByte = 0;
     final char defaultChar = 0;
@@ -137,21 +140,24 @@ class ImportsExample extends Type.UnknownType implements KeyStore.Entry {
 
     void method1() {}
     void method2(BufferedReader br) {}
-    Buffer method3(JarFile jf) { return null; }
+    @Nullable Buffer method3(JarFile jf) { return null; }
 
     class Inner {
         Security security;
 
         Inner(Timer timer) {}
 
-        LineNumber getLineNumber() {return null;}
-        LightweightContent getLightweightContent(Timeout timeout) {return null;}
+        @Nullable LineNumber getLineNumber() {return null;}
+        @Nullable LightweightContent getLightweightContent(Timeout timeout) {return null;}
     }
 }
 
 abstract  class ModifiersExample {
+    @Nullable
     public final static ArrayList<Integer> arrayList = null;
+    @Nullable
     private static volatile LinkedList<List<Double>> linkedListOfLists = null;
+    @Nullable
     protected transient final static LinkedList linkedList = null;
 
     ModifiersExample(final Function<?, ?> f) {}
@@ -209,14 +215,14 @@ class GenericsExample<E, V, T, U> extends Base<E, V> implements Interface<T, U> 
     <U> GenericsExample(U f, Stream<? super T> s) {}
     <W> GenericsExample() {}
 
-    <W> W method1(W w, U u, ArrayList<? super W> arrayList) {return null;}
+    @Nullable <W> W method1(W w, U u, ArrayList<? super W> arrayList) {return null;}
     final <K> void method2(K k) {}
-    <Q, N> ArrayList<? extends Q> method3(T t1, T t2) { return null; }
+    @Nullable <Q, N> ArrayList<? extends Q> method3(T t1, T t2) { return null; }
 
     class Inner<F, R, U> implements Interface <T, U> {
         ArrayList<U> arrayList;
         <T> Inner(Base<?, ? extends T> f, V t) {}
-        <Q, N> ArrayList<? extends Q> method3(T t1, T t2) { return null; }
+        @Nullable <Q, N> ArrayList<? extends Q> method3(T t1, T t2) { return null; }
     }
 }
 

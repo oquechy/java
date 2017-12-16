@@ -5,6 +5,7 @@ import com.google.common.base.Charsets;
 import com.google.common.collect.Streams;
 import com.google.googlejavaformat.java.Formatter;
 import com.google.googlejavaformat.java.FormatterException;
+import org.jetbrains.annotations.NotNull;
 import sun.reflect.generics.reflectiveObjects.ParameterizedTypeImpl;
 import sun.reflect.generics.reflectiveObjects.TypeVariableImpl;
 
@@ -20,6 +21,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+/**
+ * Analyses structure of @code{Class<?>} object.
+ */
 public class Reflector {
 
     private static final Collector<CharSequence, ?, String> genericParameters = Collectors.joining(
@@ -28,8 +32,14 @@ public class Reflector {
             ">"
     );
 
-    public static void printStructure(Class<?> someClass) throws IOException, FormatterException {
-        StringBuilder lines = new StringBuilder();
+    /**
+     * Prints structure of class to same named file.
+     * @param someClass class to analyse
+     * @throws IOException if failed to create file
+     * @throws FormatterException if failed to generate code
+     */
+    public static void printStructure(@NotNull Class<?> someClass) throws IOException, FormatterException {
+        @NotNull StringBuilder lines = new StringBuilder();
 
         printPackage(someClass, lines);
         printImports(someClass, lines);
@@ -37,28 +47,36 @@ public class Reflector {
         writeResult(someClass.getSimpleName() + ".java", lines);
     }
 
-    public static boolean diffClasses(Class<?> classA, Class<?> classB, PrintStream writer) {
-        return setminusFields(classA, classB, writer, "+ ") |
-                setminusFields(classB, classA, writer, "- ") |
-                setminusMethods(classA, classB, writer, "+ ") |
-                setminusMethods(classB, classA, writer, "- ");
+    /**
+     * Prints difference of two classes
+     * @param classA first class to compare
+     * @param classB second class to compare
+     * @param writer stream to write to
+     * @return true if difference was found
+     */
+    public static boolean diffClasses(@NotNull Class<?> classA, @NotNull Class<?> classB, @NotNull PrintStream writer) {
+        return setMinusFields(classA, classB, writer, "+ ") |
+                setMinusFields(classB, classA, writer, "- ") |
+                setMinusMethods(classA, classB, writer, "+ ") |
+                setMinusMethods(classB, classA, writer, "- ");
     }
 
-    private static boolean setminusMethods(Class<?> classA, Class<?> classB, PrintStream writer, String prefix) {
-        Function<Method, String> methodToString = f -> getActualGenericType(f.getType(), f.getGenericType()) + ' ' + f.getName();
+    private static boolean setMinusMethods(@NotNull Class<?> classA, @NotNull Class<?> classB, @NotNull PrintStream writer, String prefix) {
+        Function<Method, String> methodToString = Method::toGenericString;
 
-        Set<String> fieldsB = Arrays.stream(classB.getDeclaredFields())
+        Set<String> methodsB = Arrays.stream(classB.getDeclaredMethods())
                 .map(methodToString)
                 .collect(Collectors.toCollection(HashSet::new));
 
-        return Arrays.stream(classA.getDeclaredFields())
+        return Arrays.stream(classA.getDeclaredMethods())
                 .map(methodToString)
-                .filter(f -> !fieldsB.contains(f))
+                .filter(f -> !methodsB.contains(f))
                 .peek(f -> writer.println(prefix + f)).count() > 0;
     }
 
-    private static boolean setminusFields(Class<?> classA, Class<?> classB, PrintStream writer, String prefix) {
-        Function<Field, String> fieldToString = f -> getModifiers(f.getModifiers()) + getActualGenericType(f.getType(), f.getGenericType()) + ' ' + f.getName();
+    private static boolean setMinusFields(@NotNull Class<?> classA, @NotNull Class<?> classB, @NotNull PrintStream writer, String prefix) {
+        @NotNull Function<Field, String> fieldToString = f -> getModifiers(f.getModifiers()) +
+                getActualGenericType(f.getType(), f.getGenericType()) + ' ' + f.getName();
 
         Set<String> fieldsB = Arrays.stream(classB.getDeclaredFields())
                 .map(fieldToString)
@@ -70,7 +88,7 @@ public class Reflector {
                 .peek(f -> writer.println(prefix + f)).count() > 0;
     }
 
-    private static void printClass(Class<?> someClass, StringBuilder lines) {
+    private static void printClass(@NotNull Class<?> someClass, @NotNull StringBuilder lines) {
         printHeader(someClass, lines);
 
         printFields(someClass, lines);
@@ -79,19 +97,19 @@ public class Reflector {
 
         printMethods(someClass, lines);
 
-        for (Class<?> inner : someClass.getDeclaredClasses()) {
+        for (@NotNull Class<?> inner : someClass.getDeclaredClasses()) {
             printClass(inner, lines);
         }
 
         printFooter(lines);
     }
 
-    private static void printFooter(StringBuilder lines) {
+    private static void printFooter(@NotNull StringBuilder lines) {
         lines.append('}');
     }
 
-     private static void  printMethods(Class<?> someClass, StringBuilder lines) {
-        for (Method method : someClass.getDeclaredMethods()) {
+     private static void  printMethods(@NotNull Class<?> someClass, @NotNull StringBuilder lines) {
+        for (@NotNull Method method : someClass.getDeclaredMethods()) {
             int modifiers = method.getModifiers();
             appendModifiers(modifiers, lines)
                     .append(getForeignGenericTypes(method))
@@ -106,20 +124,22 @@ public class Reflector {
         }
     }
 
-    private static String getForeignGenericTypes(Executable method) {
-        Pattern pattern = Pattern.compile("(<.*?>)");
+    @NotNull
+    private static String getForeignGenericTypes(@NotNull Executable method) {
+        @NotNull Pattern pattern = Pattern.compile("(<.*?>)");
         String genericString = method.toGenericString();
         System.out.println(genericString);
-        Matcher matcher = pattern.matcher(genericString.substring(0, genericString.indexOf('(')));
+        @NotNull Matcher matcher = pattern.matcher(genericString.substring(0, genericString.indexOf('(')));
         return matcher.find() ? matcher.group(1) : "";
     }
 
-    private static String getGenericReturnType(Method method) {
+    @NotNull
+    private static String getGenericReturnType(@NotNull Method method) {
         return getActualGenericType(method.getReturnType(), method.getGenericReturnType());
     }
 
-    private static void printConstructors(Class<?> someClass, StringBuilder lines) {
-        for (Constructor<?> constructor : someClass.getDeclaredConstructors()) {
+    private static void printConstructors(@NotNull Class<?> someClass, @NotNull StringBuilder lines) {
+        for (@NotNull Constructor<?> constructor : someClass.getDeclaredConstructors()) {
             appendModifiers(constructor.getModifiers(), lines)
                     .append(getForeignGenericTypes(constructor))
                     .append(someClass.getSimpleName())
@@ -128,8 +148,8 @@ public class Reflector {
         }
     }
 
-    private static void printFields(Class<?> someClass, StringBuilder lines) {
-        for (Field field : someClass.getDeclaredFields()) {
+    private static void printFields(@NotNull Class<?> someClass, @NotNull StringBuilder lines) {
+        for (@NotNull Field field : someClass.getDeclaredFields()) {
             appendModifiers(field.getModifiers(), lines)
                     .append(getGenericFieldType(field))
                     .append(' ')
@@ -141,7 +161,7 @@ public class Reflector {
         }
     }
 
-    private static String getDefaultValue(Class<?> type) {
+    private static String getDefaultValue(@NotNull Class<?> type) {
         if (!type.isPrimitive()) {
             return "null";
         }
@@ -153,11 +173,12 @@ public class Reflector {
         return "0";
     }
 
-    private static String getGenericFieldType(Field field) {
+    @NotNull
+    private static String getGenericFieldType(@NotNull Field field) {
         return getActualGenericType(field.getType(), field.getGenericType());
     }
 
-    private static void printHeader(Class<?> someClass, StringBuilder lines) {
+    private static void printHeader(@NotNull Class<?> someClass, @NotNull StringBuilder lines) {
         appendModifiers(someClass.getModifiers(), lines)
                 .append(someClass.isInterface() ? "" : "class").append(' ')
                 .append(getGenericClassName(someClass)).append(' ')
@@ -166,16 +187,17 @@ public class Reflector {
                 .append('{');
     }
 
-    private static StringBuilder appendModifiers(int modifiers, StringBuilder lines) {
+    private static StringBuilder appendModifiers(int modifiers, @NotNull StringBuilder lines) {
         return lines.append(getModifiers(modifiers)).append(' ');
     }
 
+    @NotNull
     private static String getModifiers(int modifiers) {
-        String s = Modifier.toString(modifiers);
+        @NotNull String s = Modifier.toString(modifiers);
         return s;
     }
 
-    private static String getGenericClassName(Class<?> someClass) {
+    private static String getGenericClassName(@NotNull Class<?> someClass) {
         TypeVariable<? extends Class<?>>[] typeParameters = someClass.getTypeParameters();
         return someClass.getSimpleName() +
                 (typeParameters.length > 0 ?
@@ -188,7 +210,7 @@ public class Reflector {
     public static void main(String[] args) {
     }
 
-    private static String getBody(Method method) {
+    private static String getBody(@NotNull Method method) {
         Class<?> returnType = method.getReturnType();
         if (returnType == void.class) {
             return "";
@@ -201,7 +223,7 @@ public class Reflector {
         return "return " + value + ";";
     }
 
-    private static String getParamList(Executable executable) {
+    private static String getParamList(@NotNull Executable executable) {
 
         return Streams.zip(
                 Arrays.stream(executable.getParameters()),
@@ -210,7 +232,8 @@ public class Reflector {
         ).collect(Collectors.joining(",", "(", ")"));
     }
 
-    private static String getActualGenericType(Class<?> p, Type g) {
+    @NotNull
+    private static String getActualGenericType(@NotNull Class<?> p, Type g) {
         return g instanceof TypeVariableImpl ?
                 ((TypeVariableImpl) g).getName() :
                 g instanceof ParameterizedTypeImpl ?
@@ -222,17 +245,17 @@ public class Reflector {
                         p.getSimpleName();
     }
 
-    private static void writeResult(String name, StringBuilder lines) throws IOException, FormatterException {
+    private static void writeResult(@NotNull String name, @NotNull StringBuilder lines) throws IOException, FormatterException {
         Path out = Paths.get(name);
 
-        String input = lines.toString();
+        @NotNull String input = lines.toString();
         System.out.println("input = " + input);
         String formatted = new Formatter().formatSourceAndFixImports(input);
         Files.write(out, formatted.getBytes(Charsets.UTF_8));
     }
 
-    private static void printImports(Class<?> someClass, StringBuilder lines) {
-        Set<String> imports = new HashSet<>();
+    private static void printImports(@NotNull Class<?> someClass, @NotNull StringBuilder lines) {
+        @NotNull Set<String> imports = new HashSet<>();
         collectImports(someClass, imports);
 
         for (String packageLine : imports) {
@@ -240,11 +263,16 @@ public class Reflector {
         }
     }
 
-    private static void printPackage(Class<?> someClass, StringBuilder lines) {
+    private static void printPackage(@NotNull Class<?> someClass, @NotNull StringBuilder lines) {
         lines.append("package ").append(someClass.getPackage().getName()).append(";");
     }
 
-    public static void collectImports(Class<?> someClass, Set<String> imports) {
+    /**
+     * Collects imported classes to set
+     * @param someClass class to inject dependencies from
+     * @param imports set to store dependencies
+     */
+    public static void collectImports(@NotNull Class<?> someClass, @NotNull Set<String> imports) {
         collectInheritedImports(someClass, imports);
         collectFieldImports(someClass, imports);
         collectMethodImports(someClass, imports);
@@ -252,33 +280,33 @@ public class Reflector {
         collectInnerImports(someClass, imports);
     }
 
-    private static void collectInheritedImports(Class<?> someClass, Set<String> imports) {
+    private static void collectInheritedImports(@NotNull Class<?> someClass, @NotNull Set<String> imports) {
         if (someClass.getSuperclass() != null) {
             addTypeToImports(imports, someClass.getSuperclass());
         }
 
-        for (Class<?> superclass : someClass.getInterfaces()) {
+        for (@NotNull Class<?> superclass : someClass.getInterfaces()) {
             addTypeToImports(imports, superclass);
         }
     }
 
-    private static void collectInnerImports(Class<?> someClass, Set<String> imports) {
-        for (Class<?> inner : someClass.getDeclaredClasses()) {
+    private static void collectInnerImports(@NotNull Class<?> someClass, @NotNull Set<String> imports) {
+        for (@NotNull Class<?> inner : someClass.getDeclaredClasses()) {
             collectImports(inner, imports);
         }
     }
 
-    private static void collectConstructorImports(Class<?> someClass, Set<String> imports) {
-        for (Constructor constructor : someClass.getDeclaredConstructors()) {
-            for (Class<?> parameter : constructor.getParameterTypes()) {
+    private static void collectConstructorImports(@NotNull Class<?> someClass, @NotNull Set<String> imports) {
+        for (@NotNull Constructor constructor : someClass.getDeclaredConstructors()) {
+            for (@NotNull Class<?> parameter : constructor.getParameterTypes()) {
                 addTypeToImports(imports, parameter);
             }
         }
     }
 
-    private static void collectMethodImports(Class<?> someClass, Set<String> imports) {
-        for (Method method : someClass.getDeclaredMethods()) {
-            for (Class<?> parameter : method.getParameterTypes()) {
+    private static void collectMethodImports(@NotNull Class<?> someClass, @NotNull Set<String> imports) {
+        for (@NotNull Method method : someClass.getDeclaredMethods()) {
+            for (@NotNull Class<?> parameter : method.getParameterTypes()) {
                 addTypeToImports(imports, parameter);
             }
 
@@ -286,29 +314,29 @@ public class Reflector {
         }
     }
 
-    private static void addTypeToImports(Set<String> imports, Class<?> type) {
+    private static void addTypeToImports(@NotNull Set<String> imports, @NotNull Class<?> type) {
         if (!type.isPrimitive()) {
             imports.add(getPackageName(type));
         }
     }
 
-    private static String getPackageName(Class<?> parameter) {
+    private static String getPackageName(@NotNull Class<?> parameter) {
         return parameter.getCanonicalName();
     }
 
-    public static void collectFieldImports(Class<?> someClass, Set<String> imports) {
-        for (Field field : someClass.getDeclaredFields()) {
+    private static void collectFieldImports(@NotNull Class<?> someClass, @NotNull Set<String> imports) {
+        for (@NotNull Field field : someClass.getDeclaredFields()) {
             addTypeToImports(imports, field.getType());
         }
     }
 
-    public static String getExtended(Class<?> someClass) {
+    private static String getExtended(@NotNull Class<?> someClass) {
         Type genericSuperclass = someClass.getGenericSuperclass();
         Class<?> superclass = someClass.getSuperclass();
         return superclass == null ? "" : "extends " + getActualGenericType(superclass, genericSuperclass) + " ";
     }
 
-    public static String getImplemented(Class<?> someClass) {
+    private static String getImplemented(@NotNull Class<?> someClass) {
         Class<?>[] superclass = someClass.getInterfaces();
         Type[] genericInterfaces = someClass.getGenericInterfaces();
         return superclass.length == 0 ? "" :
