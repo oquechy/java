@@ -1,5 +1,6 @@
 package ru.spbau.mit.oquechy.fp;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
 import java.util.*;
@@ -15,7 +16,7 @@ public class CollectionsTest {
     @Test
     public void testMap() {
         Function1<Object, Integer> hash = Object::hashCode;
-        List<Integer> map = Collections.map(hash, OBJECTS);
+        @NotNull List<Integer> map = Collections.map(hash, OBJECTS);
         assertThat(map, hasSize(OBJECTS.size()));
         for (int i = 0; i < map.size(); i++) {
             Integer h = map.get(i);
@@ -25,9 +26,9 @@ public class CollectionsTest {
 
     @Test
     public void testFilter() {
-        Predicate<Object> isNum = o -> o.getClass() == Integer.class ||o.getClass() == Double.class;
-        List<Object> filter = Collections.filter(isNum, OBJECTS);
-        Object ans[] = {1, 4, 6.00001, -5.5};
+        @NotNull Predicate<Object> isNum = o -> o.getClass() == Integer.class ||o.getClass() == Double.class;
+        @NotNull List<Object> filter = Collections.filter(isNum, OBJECTS);
+        @NotNull Object ans[] = {1, 4, 6.00001, -5.5};
         assertThat(filter, hasSize(ans.length));
         for (int i = 0; i < filter.size(); i++) {
             Object h = filter.get(i);
@@ -37,9 +38,9 @@ public class CollectionsTest {
 
     @Test
     public void takeWhile() {
-        Predicate<Object> isInt = o -> o.getClass() == Integer.class;
-        List<Object> notArray = Collections.takeWhile(isInt, OBJECTS);
-        Object ans[] = {1, 4};
+        @NotNull Predicate<Object> isInt = o -> o.getClass() == Integer.class;
+        @NotNull List<Object> notArray = Collections.takeWhile(isInt, OBJECTS);
+        @NotNull Object ans[] = {1, 4};
         assertThat(notArray, hasSize(ans.length));
         for (int i = 0; i < notArray.size(); i++) {
             Object h = notArray.get(i);
@@ -49,9 +50,9 @@ public class CollectionsTest {
 
     @Test
     public void takeUnless() {
-        Predicate<Object> isArray = o -> o.getClass() == int[].class;
-        List<Object> notArray = Collections.takeUnless(isArray, OBJECTS);
-        Object ans[] = {1, 4, "lisa", ""};
+        @NotNull Predicate<Object> isArray = o -> o.getClass() == int[].class;
+        @NotNull List<Object> notArray = Collections.takeUnless(isArray, OBJECTS);
+        @NotNull Object ans[] = {1, 4, "lisa", ""};
         assertThat(notArray, hasSize(ans.length));
         for (int i = 0; i < notArray.size(); i++) {
             Object h = notArray.get(i);
@@ -61,12 +62,12 @@ public class CollectionsTest {
 
     @Test
     public void foldl() {
-        Collection<String> list = new LinkedList<>();
+        @NotNull Collection<String> list = new LinkedList<>();
         list.add("ell");
         list.add("0, \\|\\|");
         list.add("orl");
         list.add("d!");
-        Function2<String, String, String> inefficientConcatWithQ = (s1, s2) -> s1 + "Q" + s2;
+        @NotNull Function2<String, String, String> inefficientConcatWithQ = (s1, s2) -> s1 + "Q" + s2;
 
         String concat  = Collections.foldl(inefficientConcatWithQ, "H", list);
         assertThat(concat, is("HQellQ0, \\|\\|QorlQd!"));
@@ -74,13 +75,13 @@ public class CollectionsTest {
 
     @Test
     public void foldr() {
-        Collection<Boolean> set = new HashSet<>();
+        @NotNull Collection<Boolean> set = new HashSet<>();
         set.add(true);
         set.add(false);
         set.add(true);
         set.add(true);
         set.add(false);
-        Function2<Object, Integer, Integer> hashSumPlusNum = (o, acc) -> acc + o.hashCode() + 1;
+        @NotNull Function2<Object, Integer, Integer> hashSumPlusNum = (o, acc) -> acc + o.hashCode() + 1;
 
         Integer sum  = Collections.foldr(hashSumPlusNum, 0, set);
         assertThat(sum, is(2 + Boolean.TRUE.hashCode() + Boolean.FALSE.hashCode()));

@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
  * @param <T2> second arg type
  * @param <U> return type
  */
+@FunctionalInterface
 public interface Function2<T1, T2, U> {
     /**
      * function call method
@@ -16,7 +17,7 @@ public interface Function2<T1, T2, U> {
      * @param t2 second argument
      * @return function computation result
      */
-    @NotNull U apply(T1 t1, T2 t2);
+    U apply(T1 t1, T2 t2);
 
     /**
      * returns function g(f(x, y)), assuming this = f

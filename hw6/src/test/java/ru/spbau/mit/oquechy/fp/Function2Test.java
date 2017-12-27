@@ -4,8 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.*;
 
@@ -35,9 +33,9 @@ public class Function2Test {
 
     @Test
     public void testCompose() {
-            boolean[] ans = {true, false, false, false, true};
+            @NotNull boolean[] ans = {true, false, false, false, true};
 
-            Predicate<Character> isVowel = c -> (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u');
+            @NotNull Predicate<Character> isVowel = c -> (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u');
             for (int i = 0; i < 5; i++) {
                 assertThat(getChar.compose(isVowel).apply(STRINGS[i], i), equalTo(ans[i]));
             }
@@ -53,7 +51,7 @@ public class Function2Test {
     @Test
     public void testBind1() {
         String incomplete = STRINGS[2];
-        Function1<Integer, Character> getCharOfIncomplete = getChar.bind1(incomplete);
+        @NotNull Function1<Integer, Character> getCharOfIncomplete = getChar.bind1(incomplete);
 
         for (int i = 0; i < incomplete.length(); i++) {
             assertThat(getCharOfIncomplete.apply(i), equalTo(incomplete.charAt(i)));
@@ -63,8 +61,8 @@ public class Function2Test {
 
     @Test
     public void testBind2() {
-        String ice = "lyodt";
-        Function1<String, Character> getFourthChar = getChar.bind2(3);
+        @NotNull String ice = "lyodt";
+        @NotNull Function1<String, Character> getFourthChar = getChar.bind2(3);
 
         for (int i = 0; i < ice.length(); i++) {
             assertThat(getFourthChar.apply(STRINGS[i]), equalTo(ice.charAt(i)));
@@ -74,8 +72,8 @@ public class Function2Test {
 
     @Test
     public void testCurry() {
-        String ice = "lyodt";
-        Function1<String, Character> getFourthChar = getChar.curry(3);
+        @NotNull String ice = "lyodt";
+        @NotNull Function1<String, Character> getFourthChar = getChar.curry(3);
 
         for (int i = 0; i < ice.length(); i++) {
             assertThat(getFourthChar.apply(STRINGS[i]), equalTo(ice.charAt(i)));

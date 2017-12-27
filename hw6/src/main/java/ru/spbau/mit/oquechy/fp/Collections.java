@@ -23,7 +23,7 @@ public class Collections {
      */
     @NotNull
     public static <E, U> List<U> map(@NotNull Function1<? super E, U> f, @NotNull Collection<E> collection) {
-        List<U> list = new ArrayList<>();
+        @NotNull List<U> list = new ArrayList<>();
 
         for (E e : collection) {
             list.add(f.apply(e));
@@ -40,7 +40,7 @@ public class Collections {
      */
     @NotNull
     public static <E> List<E> filter(@NotNull Predicate<? super E> p, @NotNull Collection<E> collection) {
-        List<E> list = new ArrayList<>();
+        @NotNull List<E> list = new ArrayList<>();
 
         for (E e : collection) {
             if (p.apply(e)) {
@@ -59,7 +59,7 @@ public class Collections {
      */
     @NotNull
     public static <E> List<E> takeWhile(@NotNull Predicate<? super E> p, @NotNull Collection<E> collection) {
-        List<E> list = new ArrayList<>();
+        @NotNull List<E> list = new ArrayList<>();
 
         for (E e : collection) {
            if (p.apply(e)) {
@@ -114,12 +114,12 @@ public class Collections {
 
     public static <T, E> T foldr(@NotNull Function2<? super E, ? super T, ? extends T> f, T acc, @NotNull Collection<E> collection) {
 
-        List<E> elements = new ArrayList<>();
+        @NotNull List<E> elements = new ArrayList<>();
         elements.addAll(collection);
 
-        ListIterator<E> iterator = elements.listIterator(elements.size());
+        @NotNull ListIterator<E> iterator = elements.listIterator(elements.size());
 
-        while(iterator.hasPrevious()) {
+        while (iterator.hasPrevious()) {
             acc = f.apply(iterator.previous(), acc);
         }
 

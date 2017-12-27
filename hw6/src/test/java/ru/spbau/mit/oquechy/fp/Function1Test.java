@@ -1,6 +1,5 @@
 package ru.spbau.mit.oquechy.fp;
 
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 
@@ -23,7 +22,7 @@ public class Function1Test {
         }
 
         {
-            Function1<Object, Boolean> f1 = o -> o.getClass() == Integer.class;
+            @NotNull Function1<Object, Boolean> f1 = o -> o.getClass() == Integer.class;
             for (int i = 0; i < OBJECTS.length; i++) {
                 assertThat(f1.apply(OBJECTS[i]), equalTo(i == 0));
             }

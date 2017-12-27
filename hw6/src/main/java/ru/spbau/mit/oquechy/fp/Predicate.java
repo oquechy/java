@@ -7,13 +7,19 @@ import org.jetbrains.annotations.NotNull;
  * transforms value of type T to either true or false
  * @param <T> argument type
  */
+@FunctionalInterface
 public interface Predicate<T> extends Function1<T, Boolean> {
 
     /**
      * constants
      */
-    Predicate<Object> ALWAYS_TRUE = o -> true;
-    Predicate<Object> ALWAYS_FALSE = o -> false;
+    static <T> Predicate<T> alwaysTrue() {
+        return t -> true;
+    }
+
+    static <T> Predicate<T> alwaysFalse() {
+        return t -> false;
+    }
 
     /**
      * @param p another predicate

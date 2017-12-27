@@ -8,13 +8,14 @@ import org.jetbrains.annotations.NotNull;
  * @param <T> argument type
  * @param <U> return type
  */
+@FunctionalInterface
 public interface Function1<T, U> {
     /**
      * function call method
      * @param t argument
      * @return function computation result
      */
-    @NotNull U apply(T t);
+    U apply(T t);
 
     /**
      * returns function g(f(x)), assuming this = f

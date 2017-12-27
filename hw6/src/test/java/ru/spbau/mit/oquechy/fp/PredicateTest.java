@@ -1,5 +1,6 @@
 package ru.spbau.mit.oquechy.fp;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -25,7 +26,8 @@ public class PredicateTest {
     public void testAlwaysTrue() {
         for (int i = 0; i < 5; i++) {
             Object o = OBJECTS[i];
-            assertThat(Predicate.ALWAYS_TRUE.apply(o), is(true));
+            assertThat(Predicate.alwaysTrue().apply(o), is(true));
+            assertThat(Predicate.alwaysTrue().apply(i), is(true));
         }
     }
 
@@ -33,14 +35,15 @@ public class PredicateTest {
     public void testAlwaysFalse() {
         for (int i = 0; i < 5; i++) {
             Object o = OBJECTS[i];
-            assertThat(Predicate.ALWAYS_FALSE.apply(o), is(false));
+            assertThat(Predicate.alwaysFalse().apply(o), is(false));
+            assertThat(Predicate.alwaysFalse().apply(i), is(false));
         }
     }
 
     @Test
     public void testOr() {
 
-        final boolean[] ans = {false, true, true, true, false, true, false, true, true};
+        @NotNull final boolean[] ans = {false, true, true, true, false, true, false, true, true};
 
         for (int i = 0; i < INTEGERS.length; i++) {
             Integer integer = INTEGERS[i];
@@ -50,7 +53,7 @@ public class PredicateTest {
 
     @Test
     public void testAnd() {
-        final boolean[] ans = {false, true, false, true, false, false, false, false, true};
+        @NotNull final boolean[] ans = {false, true, false, true, false, false, false, false, true};
 
         for (int i = 0; i < INTEGERS.length; i++) {
             Integer integer = INTEGERS[i];
@@ -60,7 +63,7 @@ public class PredicateTest {
 
     @Test
     public void testNot() {
-        final boolean[] ans = {true, false, false, false, true, true, true, true, false};
+        @NotNull final boolean[] ans = {true, false, false, false, true, true, true, true, false};
 
         for (int i = 0; i < INTEGERS.length; i++) {
             Integer integer = INTEGERS[i];
@@ -74,7 +77,7 @@ public class PredicateTest {
             assertThat(evenInteger.apply(i), equalTo((i & 1) == 0));
         }
 
-        Predicate<Object> isInteger = o -> o.getClass() == Integer.class;
+        @NotNull Predicate<Object> isInteger = o -> o.getClass() == Integer.class;
         for (int i = 0; i < OBJECTS.length; i++) {
             assertThat(isInteger.apply(OBJECTS[i]), equalTo((i & 1) != 0));
         }
@@ -82,7 +85,7 @@ public class PredicateTest {
 
     @Test
     public void testCompose() {
-        Predicate<Boolean> not = b -> !b;
+        @NotNull Predicate<Boolean> not = b -> !b;
 
         for (int i = 0; i < 5; i++) {
             Object o = OBJECTS[i];
