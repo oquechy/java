@@ -201,6 +201,19 @@ public class SerializationTest {
         assertThat(resultEntry, equalTo(sourceEntry));
     }
 
+    @Test(expected = NullPointerException.class)
+    public void testSerializeNullEntry() throws IOException, InstantiationException, IllegalAccessException {
+        @NotNull ByteArrayOutputStream source = new ByteArrayOutputStream();
+
+        @NotNull StringEntry sourceEntry = new StringEntry(null, null, null, null, null);
+        Serialization.serialize(sourceEntry, source);
+
+        @NotNull ByteArrayInputStream result = new ByteArrayInputStream(source.toByteArray());
+        StringEntry resultEntry = Serialization.deserialize(result, StringEntry.class);
+
+        assertThat(resultEntry, equalTo(sourceEntry));
+    }
+
     @Test
     public void testSerializeModifiedEntry() throws IOException, InstantiationException, IllegalAccessException {
         @NotNull ByteArrayOutputStream source = new ByteArrayOutputStream();

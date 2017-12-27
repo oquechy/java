@@ -10,7 +10,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
- * Saves and restores state of object with fields of primitive types or Strings.
+ * Saves and restores state of object with fields of primitive types or not-null Strings.
  */
 public class Serialization {
 
@@ -29,7 +29,7 @@ public class Serialization {
      * Puts serialized object to out, using reflection.
      * All fields are written to output, regardless of the modifiers.
      * It is assumed that the number of fields of each type fits in int.
-     * Values are ordered by the names of fields.
+     * Values are ordered by the names of fields. String fields must be not-null.
      * @param object object to be serialized
      * @param out output stream
      * @throws IOException when fails with OutputStream
