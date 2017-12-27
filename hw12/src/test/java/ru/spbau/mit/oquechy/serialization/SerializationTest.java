@@ -20,7 +20,7 @@ public class SerializationTest {
         @Nullable private String s4 = null;
         @Nullable private String s5 = null;
 
-        private StringEntry(@Nullable String s1, @Nullable String s2, @Nullable String s3,
+        public StringEntry(@Nullable String s1, @Nullable String s2, @Nullable String s3,
                             @Nullable String s4, @Nullable String s5) {
             this.s1 = s1;
             this.s2 = s2;
@@ -81,7 +81,7 @@ public class SerializationTest {
         private short f11 = 0;
         private short f14 = -1;
 
-        private PrimitiveEntry(int f1, int f4, int f15, int f16,
+        public PrimitiveEntry(int f1, int f4, int f15, int f16,
                                char f9, char f2,
                                byte f3, byte f6,
                                boolean f8, boolean f5,
@@ -106,7 +106,7 @@ public class SerializationTest {
             this.f14 = f14;
         }
 
-        private PrimitiveEntry() { }
+        public PrimitiveEntry() { }
 
         void method() { }
 
