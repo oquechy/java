@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/oquechy.iml" filepath="$PROJECT_DIR$/.idea/modules/oquechy.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/oquechy_main.iml" filepath="$PROJECT_DIR$/.idea/modules/oquechy_main.iml" group="oquechy" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/oquechy_test.iml" filepath="$PROJECT_DIR$/.idea/modules/oquechy_test.iml" group="oquechy" />
+    </modules>
+  </component>
+</project>
